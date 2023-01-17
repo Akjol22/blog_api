@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
+    'drf_yasg',
     # myapps,
     'post',
     'account',
+    
 ]
 
 MIDDLEWARE = [
@@ -85,7 +87,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'blog_api',
-        'USER': 'nurgazy',
+        'USER': 'akjol',
         'PASSWORD': '1',
         'HOST': 'localhost',
         'PORT': 5432
@@ -150,5 +152,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'amanbekovnurgazy2002@gmail.com'
-EMAIL_HOST_PASSWORD = 'qiupbdpumvcjygbj'
+EMAIL_HOST_USER = 'akzolkanaev81@gmail.com'
+EMAIL_HOST_PASSWORD = 'azbblqwcjzaelbrb'

@@ -135,7 +135,7 @@ class ForgotPaswordSerializer(serializers.Serializer):
         email = self.validated_data.get('email')
         user = User.objects.get(email=email)
         user.create_activation_code()
-        send_mail('Восстановление пароля', f'ваш код восстановления: {user.activation_code}', 'amanbekovnurgazy2002@gmail.com', [email])
+        send_mail('Восстановление пароля', f'ваш код восстановления: {user.activation_code}', 'akzolkanaev81@gmail.com', [email])
 
 
 

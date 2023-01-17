@@ -16,7 +16,7 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-            super().save()
+        super().save()
 
     
 class Tag(models.Model):
@@ -29,7 +29,7 @@ class Tag(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-            super().save()
+        super().save()
 
 
 class Post(models.Model):
@@ -49,7 +49,22 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']
+
+
+class Comment(models.Model):
+    body = models.CharField(max_length=30)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    created_at = models.DateTimeField(auto_now_add=True) 
+    update_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        
+
+    def __str__(self) -> str:
+        return self.body

@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
+
 from .serializers import ChangePasswordSerializer, ForgotPasswordCompleteSerializer, ForgotPaswordSerializer, RegistrationSerializer, LoginSerializer, ActivationSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
@@ -8,6 +10,8 @@ from .permissoins import IsActivePermission
 from rest_framework.permissions import IsAuthenticated
 
 class RegistrationView(APIView):
+
+    @swagger_auto_schema(regquest_body=RegistrationSerializer)
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
 
@@ -17,6 +21,7 @@ class RegistrationView(APIView):
 
 class ActivationView(APIView):
 
+    @swagger_auto_schema(request_body=ActivationSerializer)
     def post(self, request):
         serializer = ActivationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -41,7 +46,7 @@ class LogoutView(APIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
-
+    @swagger_auto_schema(request_body=ChangePasswordSerializer)
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data, context={'request':request})
 
@@ -52,6 +57,8 @@ class ChangePasswordView(APIView):
 
 
 class ForgotPasswordView(APIView):
+
+    @swagger_auto_schema(request_body=ForgotPaswordSerializer)
     def post(self, request):
         serializer = ForgotPaswordSerializer(data=request.data)
         
@@ -63,10 +70,11 @@ class ForgotPasswordView(APIView):
 
 
 class ForgotPasswordCompleteView(APIView):
+
+    @swagger_auto_schema(request_body=ForgotPasswordCompleteSerializer)
     def post(self, request):
         serializer = ForgotPasswordCompleteSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
             return Response('Пароль успешно изменён')
-

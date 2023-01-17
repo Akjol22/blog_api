@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics
+from drf_yasg.utils import swagger_auto_schema
 
-from .permissions import IsAdminAuthPermission
-from .models import Post, Category, Tag
-from .serializers import CategorySerializer, TagSerializer, PostSerializer, PostListSerializer
+from .permissions import IsAdminAuthPermission, IsAuthorPermission
+from .models import Post, Category, Tag, Comment
+from .serializers import CategorySerializer, TagSerializer, PostSerializer, PostListSerializer, CommentSerializer
 import django_filters
 from rest_framework import filters
 from rest_framework.viewsets import ModelViewSet
@@ -19,7 +20,6 @@ class CategoryListView(generics.ListAPIView):
 class TagListView(generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
 
 # class PostListCreateView(generics.ListCreateAPIView):
 #     queryset = Post.objects.all()
@@ -57,18 +57,24 @@ class PostViewSet(ModelViewSet):
         elif self.action == 'create':
             self.permission_classes = [IsAdminAuthPermission]
 
-        elif self.action == ['update', 'partial_update', 'destroy']:
-            self.permission_classes = ['только автор']
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthorPermission]
+
+        return super().get_permissions()
         
+        
+class CommentView(ModelViewSet):
+    queryset  =Comment.objects.all()
+    serializer_class = CommentSerializer
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            self.permission_classes = [AllowAny]
 
-        # to_representation like, commenty
-        # добавить 
+        elif self.action == 'create':
+            self.permission_classes = [IsAdminAuthPermission]
 
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthorPermission]
 
-
-
-
-
-
-
+        return super().get_permissions()

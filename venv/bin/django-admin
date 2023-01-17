@@ -1,4 +1,4 @@
-#!/home/nurgazy/Desktop/py24/projects/blog_api/venv/bin/python3
+#!/home/akjol/Desktop/python24/blog_api/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
