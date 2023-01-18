@@ -68,3 +68,29 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return self.body
+    
+class Rating(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='ratings'
+    )
+    rating = models.PositiveSmallIntegerField()
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name='ratings'
+    )
+
+    def __str__(self) -> str:
+        return f'{self.rating} -> {self.post}'
+    
+
+class Like(models.Model):
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='likes'
+    )
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name='likes'
+    )
+    is_liked = models.BooleanField(default=False)
+
+
+    def __str__(self) -> str:
+        return f'{self.post} Liked by {self.author.name}'
