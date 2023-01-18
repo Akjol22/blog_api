@@ -33,6 +33,14 @@ class PostSerializer(serializers.ModelSerializer):
         post = Post.objects.create(author=user, **validated_data)
         post.tags.add(*tags)
         return post
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['comments'] = CommentSerializer(
+            Comment.objects.filter(post=instance.pk),
+            many=True
+        ).data
+        return representation
 
 
 class PostListSerializer(serializers.ModelSerializer):
