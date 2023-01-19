@@ -3,7 +3,7 @@ from rest_framework import generics
 from drf_yasg.utils import swagger_auto_schema
 
 from .permissions import IsAdminAuthPermission, IsAuthorPermission
-from .models import Post, Category, Tag, Comment, Like
+from .models import Post, Category, Tag, Comment, Like, Rating
 from .serializers import CategorySerializer, TagSerializer, PostSerializer, PostListSerializer, CommentSerializer, RatingSerializer
 import django_filters
 from rest_framework import filters
@@ -54,17 +54,29 @@ class PostViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-    @action(['POST'], detail=True)
+    @action(['POST', 'PATCH'], detail=True)
     def rating(self, request, pk=None):
         data = request.data.copy()
         data['post'] = pk
         serializer = RatingSerializer(
             data=data, context={'request': request}
         )
+        rating = Rating.objects.filter(
+            author=request.user,
+            post=pk
+        ).first()
         if serializer.is_valid(raise_exception=True):
-            serializer.create(serializer.validated_data)
-        # print(data)
-            return Response('fjioh')
+            if rating and request.method == 'POST':
+                return Response('use PATCH method')
+        elif rating and request.method == 'PATCH':
+            serializer.update(rating, serializer.validated_data)
+            return Response('UPDATED')
+        elif request.method == 'POST':
+            serializer.create(
+                serializer.validated_data
+            )
+            return Response('CREATED')
+
         
         # сделать 'PATCH' запрос, для изме.
 
@@ -84,6 +96,17 @@ class PostViewSet(ModelViewSet):
             Like.objects.create(post=post, author=user, is_liked=True)
             message = 'liked'
         return Response(message, status=200)
+    
+
+    # @action(['PUT'], detail=True)
+    # def put(self, request, pk=None):
+    #     put = self.get_object()
+    #     user = request.user
+    #     ubdate = Post.objects.all()
+    #     if self.action in ['partial_update']:
+    #         self.permission_classes = [IsAuthorPermission]
+    #     return super().put()
+
 
 
     def get_serializer_class(self):
@@ -107,7 +130,7 @@ class PostViewSet(ModelViewSet):
         
         
 class CommentView(ModelViewSet):
-    queryset  =Comment.objects.all()
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
     def get_permissions(self):

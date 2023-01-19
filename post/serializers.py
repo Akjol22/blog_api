@@ -83,6 +83,12 @@ class RatingSerializer(serializers.ModelSerializer):
         rating = Rating.objects.create(author=user, **validated_data)
         return rating
     
+    
+    def update(self, instance, validated_data):
+        instance.rating =validated_data.get('rating')
+        instance.save()
+        return super().update(instance, validated_data)
+    
 
     def validate_rating(self, rating):
         if rating not in range(1, 6):

@@ -11,5 +11,3 @@ urlpatterns = [
     path('tags/', TagListView.as_view()),
     path('', include(router.urls)),
 ]
-
-
