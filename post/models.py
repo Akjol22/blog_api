@@ -18,6 +18,10 @@ class Category(models.Model):
             self.slug = slugify(self.title)
         super().save()
 
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
     
 class Tag(models.Model):
     title = models.CharField(max_length=15, unique=True)
@@ -50,6 +54,12 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
+    def avg_rating(self):
+        from django.db.models import Avg
+        result =  self.rating.aggregate(Avg('rating'))
+        return result['rating__avg']
 
     class Meta:
         ordering = ['-created_at']

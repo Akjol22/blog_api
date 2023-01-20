@@ -85,7 +85,7 @@ class RatingSerializer(serializers.ModelSerializer):
     
     
     def update(self, instance, validated_data):
-        instance.rating =validated_data.get('rating')
+        instance.rating = validated_data.get('rating')
         instance.save()
         return super().update(instance, validated_data)
     

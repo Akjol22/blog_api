@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase, APIRequestFactory, force_authenticate
 from collections import OrderedDict
+from django.core.files import File
 
 from .views import PostViewSet
 from .models import Post, Category
@@ -20,8 +21,8 @@ class PostTest(APITestCase):
             name='Akjol',
             last_name='Kanaev'
         )
-        img = open('/home/akjol/Downloads/Telegram Desktop/photo_2021-12-30_14-47-32.jpg', 'rb')
-        post = [
+        img = File(open('/home/akjol/Downloads/Telegram Desktop/photo_2021-12-30_14-47-32.jpg', 'rb'))
+        posts = [
             Post(author=user, body='new post',
             title='post1', image=img, category=self.category, slug='1'),
         
@@ -34,7 +35,7 @@ class PostTest(APITestCase):
             Post(author=user, body='new post',
             title='post1', image=img, category=self.category, slug='4')
         ]
-        Post.obojects.bulk_create(post)
+        Post.obojects.bulk_create(posts)
 
     def test_list(self):
         request = self.factory.get('posts/')
@@ -50,7 +51,7 @@ class PostTest(APITestCase):
         request = self.factory.get(f'posts/{slug}/')
         view = PostViewSet.as_view({'get': 'retrive'})
         response = view(request, pk=slug)
-        print(response.data)
+        # print(response.data)
 
         assert response.status_code == 200
 
@@ -72,3 +73,5 @@ class PostTest(APITestCase):
         assert Post.objects.filter(author=user, body=data['body']).exists()
 
         # TODO: test_update, test_delete, test_forgot_password_complate
+
+    
